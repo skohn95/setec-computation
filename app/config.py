@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     port: int = 8000
     python_env: str = "development"
     allowed_origins: str = "http://localhost:3000"
+    request_timeout_seconds: int = 30
 
     @property
     def allowed_origins_list(self) -> list[str]:
