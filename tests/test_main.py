@@ -25,13 +25,13 @@ def test_cors_headers_present(client):
     assert "access-control-allow-origin" in response.headers
 
 
-def test_msa_placeholder_returns_501(client):
-    """MSA endpoint should return 501 Not Implemented."""
+def test_msa_endpoint_returns_422_for_empty_body(client):
+    """MSA endpoint should return 422 for empty request body (missing required fields)."""
     response = client.post("/api/msa/compute", json={})
-    assert response.status_code == 501
+    assert response.status_code == 422
     data = response.json()
     assert data["status"] == "error"
-    assert data["error"]["code"] == "NOT_IMPLEMENTED"
+    assert data["error"]["code"] == "VALIDATION_ERROR"
 
 
 def test_control_charts_placeholder_returns_501(client):

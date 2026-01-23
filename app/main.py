@@ -44,10 +44,27 @@ app.add_middleware(
 )
 
 
+def _serialize_validation_errors(errors: list) -> list:
+    """Convert validation errors to JSON-serializable format."""
+    serialized = []
+    for error in errors:
+        serialized_error = {
+            "type": error.get("type", "unknown"),
+            "loc": error.get("loc", []),
+            "msg": error.get("msg", "Error de validación"),
+        }
+        # Only include 'input' if it's a simple type
+        if "input" in error and isinstance(error["input"], (str, int, float, bool, type(None), list, dict)):
+            serialized_error["input"] = error["input"]
+        serialized.append(serialized_error)
+    return serialized
+
+
 @app.exception_handler(RequestValidationError)
 async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
     """Handle FastAPI request validation errors with Spanish messages."""
     logger.warning(f"Request validation error: {exc.errors()}")
+    serialized_errors = _serialize_validation_errors(exc.errors())
     return JSONResponse(
         status_code=422,
         content={
@@ -55,7 +72,7 @@ async def request_validation_exception_handler(request: Request, exc: RequestVal
             "error": {
                 "code": "VALIDATION_ERROR",
                 "message": "Datos de entrada inválidos. Verifica el formato de los datos.",
-                "details": exc.errors(),
+                "details": serialized_errors,
             },
         },
     )
