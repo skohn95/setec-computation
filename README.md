@@ -71,7 +71,7 @@ python -m pytest -v
 | Endpoint | Method | Description | Status |
 |----------|--------|-------------|--------|
 | `/health` | GET | Health check for Railway monitoring | ✅ Implemented |
-| `/api/msa/compute` | POST | MSA (Gauge R&R) calculation | 🚧 Story 4.2 |
+| `/api/msa/compute` | POST | MSA (Gauge R&R) calculation | ✅ Implemented |
 | `/api/control-charts/compute` | POST | Control charts calculation | 🚧 Epic 5 |
 
 ### Health Check Response
